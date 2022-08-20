@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import ttk  # tk for window (more pretty)
+from tkinter import ttk
 import sys
+from process import CpuBar
 
 
 class Application(tk.Tk):
@@ -13,7 +14,9 @@ class Application(tk.Tk):
 		self.resizable(False, False)  # forbid to change size of window
 		self.title('CPU-RAM usage monitor bar')  # set title
 
+		self.cpu = CpuBar()
 		self.set_ui()
+		self.make_bar_cpu_usage()
 
 	def set_ui(self):
 		"""Function of graphic interface (buttons, labels)"""
@@ -34,11 +37,27 @@ class Application(tk.Tk):
 		ttk.Button(self.bar2, text='>>>').pack(side=tk.LEFT)
 
 		# Our frame on which we'll set progress bars with information about CPU and RAM
-		self.bar2 = ttk.LabelFrame(self, text='Power')
-		self.bar2.pack(fill=tk.BOTH)  # BOTH - to pull to the maximum width
+		self.bar = ttk.LabelFrame(self, text='Power')
+		self.bar.pack(fill=tk.BOTH)  # BOTH - to pull to the maximum width
 
 		self.bind_class('Tk', '<Enter>', self.enter_mouse)  # mouse hover
 		self.bind_class('Tk', '<Leave>', self.leave_mouse)  # mouse leaves the window of app
+
+	def make_bar_cpu_usage(self):
+		ttk.Label(self.bar, text=f'physical cores: {self.cpu.cpu_count}, logical cores: {self.cpu.cpu_count_logical}',
+		          anchor=tk.CENTER).pack(fill=tk.X)  # argument anchor need to set position of label
+
+		self.list_label = []
+		self.list_pbar = []
+
+		for i in range(self.cpu.cpu_count_logical):
+			# append widgets in lists
+			self.list_label.append(ttk.Label(self.bar, anchor=tk.CENTER))
+			self.list_pbar.append(ttk.Progressbar(self.bar, length=100))  # it will be divided into 100 divisions
+
+		for i in range(self.cpu.cpu_count_logical):
+			self.list_label[i].pack(fill=tk.X)
+			self.list_pbar[i].pack(fill=tk.X)
 
 	def enter_mouse(self, event):  # event - information about activity (coordinates), mandatory argument
 		"""function when mouse will hover the window of our app"""
@@ -56,5 +75,6 @@ class Application(tk.Tk):
 		sys.exit()
 
 
-root = Application()
-root.mainloop()
+if __name__ == '__main__':
+	root = Application()
+	root.mainloop()
