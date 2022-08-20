@@ -2,9 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 import sys
 from process import CpuBar
+from widget_update import Configure_widgets
 
 
-class Application(tk.Tk):
+class Application(tk.Tk, Configure_widgets):
 
 	def __init__(self):
 		tk.Tk.__init__(self)
@@ -17,6 +18,7 @@ class Application(tk.Tk):
 		self.cpu = CpuBar()
 		self.set_ui()
 		self.make_bar_cpu_usage()
+		self.configure_cpu_bar()
 
 	def set_ui(self):
 		"""Function of graphic interface (buttons, labels)"""
@@ -33,7 +35,7 @@ class Application(tk.Tk):
 		self.combo_win.current(1)
 		self.combo_win.pack(side=tk.LEFT)
 
-		ttk.Button(self.bar2, text='move').pack(side=tk.LEFT)  # will be on the left on the frame
+		ttk.Button(self.bar2, text='move', command=self.configure_win).pack(side=tk.LEFT)  # will be on the left on the frame
 		ttk.Button(self.bar2, text='>>>').pack(side=tk.LEFT)
 
 		# Our frame on which we'll set progress bars with information about CPU and RAM
@@ -58,6 +60,12 @@ class Application(tk.Tk):
 		for i in range(self.cpu.cpu_count_logical):
 			self.list_label[i].pack(fill=tk.X)
 			self.list_pbar[i].pack(fill=tk.X)
+
+		self.ram_lab = ttk.Label(self.bar, text='', anchor=tk.CENTER)
+		self.ram_lab.pack(fill=tk.X)
+		self.ram_bar = ttk.Progressbar(self.bar, length=100)
+		self.ram_bar.pack(fill=tk.X)
+
 
 	def enter_mouse(self, event):  # event - information about activity (coordinates), mandatory argument
 		"""function when mouse will hover the window of our app"""
