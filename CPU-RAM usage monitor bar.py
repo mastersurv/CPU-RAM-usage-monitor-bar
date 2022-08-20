@@ -44,6 +44,7 @@ class Application(tk.Tk, Configure_widgets):
 
 		self.bind_class('Tk', '<Enter>', self.enter_mouse)  # mouse hover
 		self.bind_class('Tk', '<Leave>', self.leave_mouse)  # mouse leaves the window of app
+		self.combo_win.bind('<<ComboboxSelected>>', self.choise_combo)
 
 	def make_bar_cpu_usage(self):
 		ttk.Label(self.bar, text=f'physical cores: {self.cpu.cpu_count}, logical cores: {self.cpu.cpu_count_logical}',
@@ -76,6 +77,17 @@ class Application(tk.Tk, Configure_widgets):
 		"""function when mouse will leave the window of app"""
 		if self.combo_win.current() == 0:  # if value is hide
 			self.geometry(f'{self.winfo_width()}x1')  # get current width and change height to 1px
+
+	def choise_combo(self, event):
+		"""function which will untie widgets"""
+		if self.combo_win.current() == 2:  # if value is min
+			self.enter_mouse('')
+			self.unbind_class('Tk', '<Enter>')
+			self.unbind_class('Tk', '<Leave>')
+			self.combo_win.unbind('<<ComboboxSelected>>')
+			self.after_cancel(self.wheel)
+
+
 
 	def app_exit(self):
 		"""function which closes app"""

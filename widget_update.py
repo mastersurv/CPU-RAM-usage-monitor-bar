@@ -22,3 +22,7 @@ class Configure_widgets:
 		else:
 			self.overrideredirect(True)  # set border
 		self.update()  # update the widnow
+
+	def clear_win(self):
+		for i in self.winfo_children():  # return the list of widgets which set on main window
+			pass
