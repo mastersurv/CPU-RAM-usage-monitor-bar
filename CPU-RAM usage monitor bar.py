@@ -16,6 +16,9 @@ class Application(tk.Tk, Configure_widgets):
 		self.title('CPU-RAM usage monitor bar')  # set title
 
 		self.cpu = CpuBar()
+		self.run_set_ui()
+
+	def run_set_ui(self):
 		self.set_ui()
 		self.make_bar_cpu_usage()
 		self.configure_cpu_bar()
@@ -67,6 +70,22 @@ class Application(tk.Tk, Configure_widgets):
 		self.ram_bar = ttk.Progressbar(self.bar, length=100)
 		self.ram_bar.pack(fill=tk.X)
 
+	def make_minimal_win(self):
+		self.bar_one = ttk.Progressbar(self, length=100)  # info about workload of CPU
+		self.bar_one.pack(side=tk.LEFT)
+
+		self.ram_bar = ttk.Progressbar(self, length=100)  # info about RAM
+		self.ram_bar.pack(side=tk.LEFT)
+
+		ttk.Button(self, text='full',
+		           command=self.make_full_win, width=5).pack(side=tk.RIGHT)  # change mode to full
+
+		ttk.Button(self, text='move',
+		           command=self.configure_win, width=5).pack(side=tk.RIGHT)  # to move the small window
+
+		self.update()  # UPDATE the window
+		self.configure_minimal_win()
+
 
 	def enter_mouse(self, event):  # event - information about activity (coordinates), mandatory argument
 		"""function when mouse will hover the window of our app"""
@@ -81,12 +100,22 @@ class Application(tk.Tk, Configure_widgets):
 	def choise_combo(self, event):
 		"""function which will untie widgets"""
 		if self.combo_win.current() == 2:  # if value is min
-			self.enter_mouse('')
+			self.enter_mouse('')  # to show the window
 			self.unbind_class('Tk', '<Enter>')
 			self.unbind_class('Tk', '<Leave>')
 			self.combo_win.unbind('<<ComboboxSelected>>')
-			self.after_cancel(self.wheel)
+			self.after_cancel(self.wheel)  # to stop loop with info of workload
+			self.clear_win()
+			self.update()
+			self.make_minimal_win()
 
+	def make_full_win(self):
+		self.after_cancel(self.wheel)
+		self.clear_win()
+		self.update()
+		self.run_set_ui()
+		self.enter_mouse('')
+		self.combo_win.current(1)
 
 
 	def app_exit(self):
