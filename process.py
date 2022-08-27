@@ -10,5 +10,9 @@ class CpuBar:
 	def cpu_percent_return(self):
 		return pt.cpu_percent(percpu=True)  # it shows average workload of each stream
 
+	def cpu_one_return(self):
+		"""functions which return total workload of CPU"""
+		return pt.cpu_percent()
+
 	def ram_usage(self):
 		return pt.virtual_memory()
